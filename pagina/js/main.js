@@ -1,6 +1,9 @@
+//Parte para cargar los eventos que ya estan guardados
 
-// language
+
+//parte donde se carga el calendario
 $('#calendar').evoCalendar({
-         'language': 'es',
-    'theme': 'Royal Navy'
-    });
+    'language': 'es',
+    'todayHighlight': true
+    //parte donde se cargan los eventos en el calendario
+});
