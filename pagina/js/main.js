@@ -4,6 +4,12 @@
 //parte donde se carga el calendario
 $('#calendar').evoCalendar({
     'language': 'es',
-    'todayHighlight': true
-    //parte donde se cargan los eventos en el calendario
+    'todayHighlight': true,
+    'theme': 'Royal Navy'
 });
+
+//boton agregar evento, debe disparar un modal
+function onClick(){
+    alert("Lo puchaste ")
+}
+

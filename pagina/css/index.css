@@ -1,0 +1,22 @@
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#8773c1;
+	border-radius:50px;
+	text-align:center;
+	padding: 0;
+	border: none;
+	color: white;
+}
+
+.my-float{
+	margin-top:22px;
+}
+
+.reducir{
+	width: 1140px;
+	height: 647px;
+}
