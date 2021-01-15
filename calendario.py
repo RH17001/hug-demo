@@ -153,16 +153,16 @@ class Ui_MainWindow(object):
     def item_click(self, item: QtWidgets.QListWidgetItem):
         self.pos = self.lista.currentRow()
         item = self.eventos[self.pos]
-        self.text_nombre.setText(item['nombre'])
-        self.text_descripcion.setText(item['descripcion'])
-        self.text_tipo.setText(item['tipo'])
+        self.text_nombre.setText(item['name'])
+        self.text_descripcion.setText(item['description'])
+        self.text_tipo.setText(item['type'])
         self.act = 2
 
     #utilidades
     def cargar_eventos(self, fecha):
         self.eventos = Backend.select(self.crear_fecha(fecha))
         for i in self.eventos:
-            self.lista.addItem(f"{i['tipo']}, {i['nombre']}")
+            self.lista.addItem(f"{i['type']}, {i['name']}")
     
     def crear_fecha(self, fecha):
         lista = str(fecha).split('-')

@@ -4,18 +4,16 @@ def init():
     con = sqlite3.connect('database.db')
     cursor = con.cursor()
     cursor.execute(
-        'Create table if not exists agenda(id text PRIMARY KEY, nombre text, fecha text, tipo text, descripcion text)')
+        'Create table if not exists agenda(id text PRIMARY KEY, name text, date text, type text, description text)')
     con.commit()
     return con
 
-
-def insert(id, fecha, nombre, descripcion, tipo):
+def insert(id, date, name, description, type):
     con = init()
     cursor = con.cursor()
-    sql = f"INSERT INTO agenda VALUES('{id}', '{nombre}', '{fecha}', '{tipo}', '{descripcion}')"
+    sql = f"INSERT INTO agenda VALUES('{id}', '{name}', '{date}', '{type}', '{description}')"
     cursor.execute(sql)
     con.commit()
-
 
 def delete(id):
     con = init()
@@ -25,14 +23,13 @@ def delete(id):
     con.commit()
 
 
-def update(id, fecha, nombre, descripcion, tipo):
+def update(id, date, name, description, type):
     con = init()
     cursor = con.cursor()
-    sql = 'UPDATE agenda SET fecha=?, nombre=?, descripcion=?, tipo=? WHERE id = ?;'
-    datos = (fecha, nombre, descripcion, tipo, id)
+    sql = 'UPDATE agenda SET date=?, name=?, description=?, type=? WHERE id = ?;'
+    datos = (date, name, description, type, id)
     cursor.execute(sql, datos)
     con.commit()
-
 
 def select_all():
     con = init()
@@ -43,26 +40,25 @@ def select_all():
     for i in cursor.fetchall():
         lista.append({
             'id': i[0],
-            'nombre': i[1],
-            'fecha': i[2],
-            'tipo': i[3],
-            'descripcion': i[4],
+            'name': i[1],
+            'date': i[2],
+            'type': i[3],
+            'description': i[4],
         })
     return lista
 
-
-def select(fecha):
+def select(date):
     con = init()
     cursor = con.cursor()
-    sql = f"SELECT * FROM agenda WHERE fecha = '{fecha}'"
+    sql = f"SELECT * FROM agenda WHERE date = '{date}'"
     cursor.execute(sql)
     lista = []
     for i in cursor.fetchall():
         lista.append({
             'id': i[0],
-            'nombre': i[1],
-            'fecha': i[2],
-            'tipo': i[3],
-            'descripcion': i[4],
+            'name': i[1],
+            'date': i[2],
+            'type': i[3],
+            'description': i[4],
         })
     return lista
