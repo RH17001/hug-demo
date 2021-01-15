@@ -1,12 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import Backend
-    
+from Backend import DB
+from datetime import datetime
+
 class Ui_MainWindow(object):
-    
-    def __init__(self):
-        #eventos de una fecha, se debe cargar cada vez que se cambia de fecha
-        self.eventos = list()
         
+    def __init__(self):
+        self.eventos = list()
+        self.pos = 0
+        self.act = 1
+    
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(903, 588)
@@ -73,11 +75,14 @@ class Ui_MainWindow(object):
 
         #cargar fecha actual al text_fecha
         self.text_fecha.setDate(self.calendario.selectedDate())
+        self.cargar_eventos(self.calendario.selectedDate().toPyDate())
         
         #agregar acciones a los eventos
         self.calendario.clicked.connect(self.date_changed)
         self.btn_add_evtn.clicked.connect(self.btn_add_evtn_click)
         self.lista.itemClicked.connect(self.item_click)
+        self.btn_save.clicked.connect(self.btn_save_click)
+        self.btn_delete.clicked.connect(self.btn_delete_click)
         
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -97,29 +102,86 @@ class Ui_MainWindow(object):
         
     #accion boton agregar
     def btn_add_evtn_click(self):
-        self.text_fecha.setDate(self.calendario.selectedDate())
+        self.limpiar()
+        self.text_nombre.setFocus()
+        self.act = 1
+        
+    def btn_delete_click(self):
+        if self.act != 1:
+            db = DB()
+            db.delete(self.eventos[self.pos]['id'])
+            self.limpiar()
+            self.act = 1
+            del db
+        
+        
+    #accion boton guardar
+    def btn_save_click(self):
+        db = DB()
+        if self.act == 1:
+            if self.text_nombre.text() == "" or self.text_tipo.text() == "":
+                print('Esta vacio completa los campos de Nombre y Tipo')
+            else:
+                fecha = self.crear_fecha(self.calendario.selectedDate().toPyDate())
+                nombre = self.text_nombre.text()
+                tipo = self.text_tipo.text()
+                descripcion = self.text_descripcion.toPlainText()
+                id = self.id_generator()
+                db.insert(id,fecha, nombre, descripcion, tipo)
+                del db
+                self.limpiar()
+        else:
+            fecha = self.crear_fecha(self.calendario.selectedDate().toPyDate())
+            nombre = self.text_nombre.text()
+            tipo = self.text_tipo.text()
+            descripcion = self.text_descripcion.toPlainText()
+            id = self.eventos[self.pos]['id']
+            db.update(id,fecha,nombre,descripcion,tipo)
+            self.limpiar()
     
     #que hacer cuando se cambia la fecha en el calendario
     def date_changed(self):
         #borrar campos
         self.text_fecha.setDate(self.calendario.selectedDate())
+        self.limpiar()
+        self.act = 1
+        
+        #cargar lista de eventos de la fecha elegida
+        self.lista.clear()
+        self.cargar_eventos(self.calendario.selectedDate().toPyDate())
+    
+    #cuando se selecciona un evento de la lista    
+    def item_click(self, item: QtWidgets.QListWidgetItem):
+        self.pos = self.lista.currentRow()
+        item = self.eventos[self.pos]
+        self.text_nombre.setText(item['nombre'])
+        self.text_descripcion.setText(item['descripcion'])
+        self.text_tipo.setText(item['tipo'])
+        self.act = 2
+
+    #utilidades
+    def cargar_eventos(self, fecha):
+        db = DB()
+        self.eventos = db.select(self.crear_fecha(fecha))
+        for i in self.eventos:
+            self.lista.addItem(f"{i['tipo']}, {i['nombre']}")
+        del db
+    
+    def crear_fecha(self, fecha):
+        lista = str(fecha).split('-')
+        months = ('January','February','March', 'April', 'June', 'July','August', 'September', 'October','November', 'December')
+        return f'{months[int(lista[1])-1]} {lista[2]}, {lista[0]}'
+
+    def id_generator(self):
+        return str(datetime.now())
+    
+    def limpiar(self):
         self.text_tipo.setText("")
         self.text_nombre.setText("")
         self.text_descripcion.setText("")
-        
-        #cargar lista de eventos de la fecha elegida
-        
-    def item_click(self, item):
-        pass
-
-
-    def cargar_eventos(self, fecha):
-        pass
-    
-    def crear_fecha(self, fecha: str):
-        lista = fecha.split()
-        
-
+        self.lista.clear()
+        self.cargar_eventos(self.calendario.selectedDate().toPyDate())
+        self.act = 1
 
 if __name__ == "__main__":
     import sys
