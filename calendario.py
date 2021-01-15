@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Backend import DB
+import Backend
 from datetime import datetime
 
 class Ui_MainWindow(object):
@@ -108,17 +108,16 @@ class Ui_MainWindow(object):
         
     def btn_delete_click(self):
         if self.act != 1:
-            db = DB()
-            db.delete(self.eventos[self.pos]['id'])
+            Backend.delete(self.eventos[self.pos]['id'])
             self.limpiar()
             self.act = 1
-            del db
         
         
     #accion boton guardar
     def btn_save_click(self):
-        db = DB()
         if self.act == 1:
+            #guardar nuevos registros
+            
             if self.text_nombre.text() == "" or self.text_tipo.text() == "":
                 print('Esta vacio completa los campos de Nombre y Tipo')
             else:
@@ -127,16 +126,16 @@ class Ui_MainWindow(object):
                 tipo = self.text_tipo.text()
                 descripcion = self.text_descripcion.toPlainText()
                 id = self.id_generator()
-                db.insert(id,fecha, nombre, descripcion, tipo)
-                del db
+                Backend.insert(id,fecha, nombre, descripcion, tipo)
                 self.limpiar()
         else:
+            #modificar los registros
             fecha = self.crear_fecha(self.calendario.selectedDate().toPyDate())
             nombre = self.text_nombre.text()
             tipo = self.text_tipo.text()
             descripcion = self.text_descripcion.toPlainText()
             id = self.eventos[self.pos]['id']
-            db.update(id,fecha,nombre,descripcion,tipo)
+            Backend.update(id,fecha,nombre,descripcion,tipo)
             self.limpiar()
     
     #que hacer cuando se cambia la fecha en el calendario
@@ -161,11 +160,9 @@ class Ui_MainWindow(object):
 
     #utilidades
     def cargar_eventos(self, fecha):
-        db = DB()
-        self.eventos = db.select(self.crear_fecha(fecha))
+        self.eventos = Backend.select(self.crear_fecha(fecha))
         for i in self.eventos:
             self.lista.addItem(f"{i['tipo']}, {i['nombre']}")
-        del db
     
     def crear_fecha(self, fecha):
         lista = str(fecha).split('-')
