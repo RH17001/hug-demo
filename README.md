@@ -7,6 +7,14 @@ Integrantes:
 - Vargas Moran, Mauricio Enrique
 - Osorio Clemente, Jose Armando
 
+Intrucciones para utilizar el Backend: Es necesario tener hug instalado
+En una terminal hacemos los siguiente
+
+```
+hug -f Backend.py
+```
+Abrimos la pagina index.html
+
 ***
 This code was made with EvoCalendar
 Copyright (c) 2020 edlynvillegas
