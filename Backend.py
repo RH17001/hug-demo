@@ -1,13 +1,8 @@
 import sqlite3
+import hug
 
-def init():
-    con = sqlite3.connect('database.db')
-    cursor = con.cursor()
-    cursor.execute(
-        'Create table if not exists agenda(id text PRIMARY KEY, name text, date text, type text, description text)')
-    con.commit()
-    return con
-
+@hug.post('/insert')
+@hug.local()
 def insert(id, date, name, description, type):
     con = init()
     cursor = con.cursor()
@@ -15,6 +10,8 @@ def insert(id, date, name, description, type):
     cursor.execute(sql)
     con.commit()
 
+@hug.delete('/delete')
+@hug.local()
 def delete(id):
     con = init()
     cursor = con.cursor()
@@ -22,7 +19,8 @@ def delete(id):
     cursor.execute(sql)
     con.commit()
 
-
+@hug.post('/update')
+@hug.local()
 def update(id, date, name, description, type):
     con = init()
     cursor = con.cursor()
@@ -31,6 +29,8 @@ def update(id, date, name, description, type):
     cursor.execute(sql, datos)
     con.commit()
 
+@hug.get('/selectAll')
+@hug.local()
 def select_all():
     con = init()
     cursor = con.cursor()
@@ -47,6 +47,8 @@ def select_all():
         })
     return lista
 
+@hug.get('/select')
+@hug.local()
 def select(date):
     con = init()
     cursor = con.cursor()
@@ -62,3 +64,11 @@ def select(date):
             'description': i[4],
         })
     return lista
+
+def init():
+    con = sqlite3.connect('database.db')
+    cursor = con.cursor()
+    cursor.execute(
+        'Create table if not exists agenda(id text PRIMARY KEY, name text, date text, type text, description text)')
+    con.commit()
+    return con

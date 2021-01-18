@@ -13,7 +13,7 @@
 
     <div class="popup-overlay"></div>
     <div class="popup">
-        <div class="popup-close" onclick="closeLoginForm()">&times;</div>
+        <div class="popup-close" onclick="cerrar()">&times;</div>
         <div class="form">
             <div class="avatar">
                 <img src="recordatorio.svg" alt="">
@@ -36,6 +36,9 @@
             <div class="element">
                 <button onclick="guardar()">Guardar</button>
             </div>
+            <div class="element">
+                <button onclick="closeLoginForm()" id="boton">Cancelar</button>
+            </div>
         </div>
     </div>
 
@@ -46,7 +49,7 @@
 
     <div id="calendar" class="reducir"></div>
 
-    
+
     <script src="js/jquery.js"></script>
     <script src="js/evo-calendar.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
